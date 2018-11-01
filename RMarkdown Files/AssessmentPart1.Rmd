@@ -1,0 +1,35 @@
+---
+title: "AssessmentPart1"
+author: "Matthew Klovski"
+bibliography:
+  - AssessmentPart1Bibliography.bib
+date: "November 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+![Map One](qgis_native_map.jpg)
+
+
+
+The above map was created in QGIS, with all population data and shapefiles obtained from the U.S Census Bureau [@geography_cartographic_nodate], [@bureau_state_nodate], [@bureau_american_nodate]. The total number of natives living on reservations in each state was not provided, so the individual reservation populations were tallied, added as a new column to the data, and joined to the shapefile. To classify data a six category jenks break was used, with a separate category for states that do not contain any federal reservations. The color scheme was chosen from Color Brewer [@brewer_colorbrewer:_2018] to avoid color-blindness issues.
+
+![Map Two](r_native_map.png)
+
+
+
+[Here is a link to an interactive version of the above map](file:///C:/Users/klovs/Documents/UCL/CASA%200005/Assessment%20One/InteractiveNativeMap.html)
+
+For this map, a basemap of North and South America obtained from Thematic Mapping [@sandvik_thematicmapping.org_nodate] was used as the template, with native population percentage data from the CIA World Factbook [@cia_world_nodate] joined to the countries and territories. To sort the data, a four category jenks break was used and then replicated with custom breaks to classify countries with no reported native population separately. The map is also interactive to allow for closer examination of smaller areas like the Caribbean or Central America. As per the previous map, Color Brewer was used, but with a different color-blindness friendly palette.
+
+During the creation process of these two maps, QGIS was found to be better suited for granular design or print maps, but RStudio appeared to be more useful for quickly creating maps for analysis, or interactive maps that can be exported to HTML. While adjusting things like legends or labels QGIS made it easy to make quick adjustments rather than in RStudio where code needed to be modified and the map re-rendered each time an edit needed to be made, which could be a time-intensive process depending on how detailed the map is. 
+
+Something RStudio excelled at was the process of inputting CSV files into a map. When importing a CSV file, RStudio automatically detects what type of data the column should be, casts the column, and also plots null entries as ‘NA’. This was useful in the process of differentiating between zero values and “no data” entries in the source data. In QGIS, the standard automatically converts every column of an imported CSV file into text. While there is an option to convert text to float as part of the MMQGIS plugin [@minn_mmqgis_nodate], there are no options to convert text to integer, or text to boolean. Changing null values also requires use of the Field Calculator as opposed to being handled by the import.
+
+
+The central issue during the creation of these maps was the difficulty of reconciling between the fluid nature of ethnicity and the purportedly quantitative boundaries of cartography, as alluded to in the article Critical Cartography [@wood_critical_2009]. Relating to the first map, Alaska Natives are not included as part of the Native American population in the U.S Census [@bureau_american_nodate], even though they are, by definition, a population native to the Americas. In an example from the second map, there is a strong socio-economic incentive for natives in Mexico to identify as part of the dominant mestizo ethnicity, rather than the often pejorative category of “Indio” [@gutierrez_nationalist_1999]. As a result of this incentive to change identities, the percentage of Mexicans of native ancestry may be underrepresented in both the official census data and this map. This serves as a useful reminder to always consider the creation context of any source data in a map.
+
