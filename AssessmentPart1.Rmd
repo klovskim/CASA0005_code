@@ -12,17 +12,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-![Map One](qgis_native_map.jpg)
+![Map One](qgis_native_map.png)
 
 
 
-The above map was created in QGIS, with all population data and shapefiles obtained from the U.S Census Bureau [@geography_cartographic_nodate], [@bureau_state_nodate], [@bureau_american_nodate]. The total number of natives living on reservations in each state was not provided, so the individual reservation populations were tallied, added as a new column to the data, and joined to the shapefile. To classify data a six category jenks break was used, with a separate category for states that do not contain any federal reservations. The color scheme was chosen from Color Brewer [@brewer_colorbrewer:_2018] to avoid color-blindness issues.
+The above map was created in QGIS, with all population data and shapefiles obtained from the U.S Census Bureau [@geography_cartographic_nodate], [@bureau_state_nodate], [@bureau_american_nodate]. The total number of natives living on reservations in each state was not provided, so the individual reservation populations were tallied and joined to the shapefile. To classify the data a six category jenks break was used, with a separate category for states that do not contain any federal reservations. The map was plotted using a conic Albers projection centered on the Continental United States. The color scheme was chosen from Color Brewer [@brewer_colorbrewer:_2018] to avoid color-blindness issues.
 
 ![Map Two](r_native_map.png)
 
 
 
-[Here is a link to an interactive version of the above map](file:///C:/Users/klovs/Documents/UCL/CASA%200005/Assessment%20One/InteractiveNativeMap.html)
+[Interactive Version Here](file:///C:/Users/klovs/Documents/UCL/CASA%200005/Assessment%20One/InteractiveNativeMap.html)
 
 For this map, a basemap of North and South America obtained from Thematic Mapping [@sandvik_thematicmapping.org_nodate] was used as the template, with native population percentage data from the CIA World Factbook [@cia_world_nodate] joined to the countries and territories. To sort the data, a four category jenks break was used and then replicated with custom breaks to classify countries with no reported native population separately. The map is also interactive to allow for closer examination of smaller areas like the Caribbean or Central America. As per the previous map, Color Brewer was used, but with a different color-blindness friendly palette.
 
