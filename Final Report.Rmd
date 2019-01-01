@@ -1,0 +1,115 @@
+---
+title: "Final Assessment"
+author: "Matthew Klovski"
+date: "December 29, 2018"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+bibliography:
+- Bib1.bib
+- Bib2.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+## Assessment One
+![**Figure One: Map of Reservation Populations in Each U.S State**](qgis_native_map.png)
+
+The above map was created in QGIS, with all data obtained from the U.S Census Bureau [@us_census_bureau_geography_cartographic_2018], [@us_census_bureau_state_2017], [@u._s._census_bureau_american_2018]. The total number of native peoples living on reservations in each state was not provided, so the individual reservation populations were tallied and joined to the shapefile of states. To classify the data a six category jenks break was used, with a separate category for states that do not contain any federal reservations. The map was plotted using a conic Albers projection centered on the Continental United States. The color scheme was chosen from Color Brewer [@brewer_colorbrewer:_2018] to avoid color-blindness issues.
+
+![**Figure Two: Map of Native Populations in Each American Country**](r_native_map.png)
+
+For this interactive map, the libraries used during the creation of this map were "RColorBrewer" [@neuwirth_rcolorbrewer:_2014], "sf" [@pebesma_sf:_2018], "sp" [@bivand_applied_2013], "tmap" [@tennekes_tmap:_2018], "tmaptools" [@tennekes_tmaptools:_2018], and "tidyverse" [@wickham_tidyverse:_2017]. A basemap of the Americas obtained from Thematic Mapping [@sandvik_thematicmapping.org_2018] was used as the template, with native population percentage data from the CIA World Factbook [@central_intelligence_agency_world_2018] joined to each country and territory. To sort the data, a four category jenks break was used with a custom break for countries with no reported native population. As per the previous map, Color Brewer was used, but with a different color-blindness friendly palette. An interactive version of this map is included in the appendix zip file as "InteractiveNativeMap.html".
+
+While creating these maps, QGIS was better suited for granular design or print maps, while RStudio was more useful for quickly creating maps for analysis or interactive maps that can be exported to HTML. While adjusting legends or labels QGIS made it easy to make quick adjustments rather than in RStudio where code needed to be modified and the map re-rendered each time an edit needed to be made, which could be a time-intensive process depending on how detailed the map is. 
+
+Something RStudio excelled at was the process of inputting CSV files into a map. When importing a CSV file, RStudio automatically detects what type of data the column should be, casts the column, and also plots null entries. This was useful in the process of differentiating between zero values and null entries in the source data. In QGIS, the standard automatically converts every column of an imported CSV file into text. While there is an option to convert text to float as part of the MMQGIS plugin [@minn_mmqgis_2018], there are no options to convert text to integer, or text to boolean. Changing null values also requires use of the Field Calculator as opposed to being handled by the import.
+
+The central issue during the creation of these maps was the difficulty of reconciling between the fluid nature of ethnicity and the purportedly quantitative boundaries of cartography, as alluded to in the article Critical Cartography [@wood_critical_2009]. In Figure One, Alaska Natives are not included as part of the Native American population in the U.S Census [@u._s._census_bureau_american_2018], even though they are, by definition, a population native to the Americas. In an example from the second map, there is a strong socio-economic incentive for native peoples in Mexico to identify as part of the dominant mestizo ethnicity, rather than the often pejorative category of "Indian" [@gutierrez_nationalist_1999]. As a result of this incentive to change identities, the percentage of Mexicans of native ancestry may be underrepresented in both the official census data and this map. This serves as a useful reminder to always consider the creation context of any source data in a map.
+
+<P style="page-break-before: always">
+
+## Assessment Two
+
+Questions one through five were completed with QGIS, while RStudio was used for question six. In order to prepare the data in QGIS, the geojson of the hunt path was imported to the project as a shapefile, along with the station locations, geocoded points of interest, and wards. Before loading in the geocoded points of interest, the location of "Platform 9 and ¾", was corrected from California to Kings Cross. The EPSG for the project was then set to the British National Grid, but the hunt locations did not project correctly within this projection. To fix this, a new copy of the hunt locations was created with BNG as the default projection. These shapefiles were loaded into R Studio as "sp" objects.
+
+While it was easier to conduct more complex spatial metrics like Ripley's K in R, basic measurements like finding object length were more intuitive within QGIS. The primary reason for this was the ease of determining function names and locations within QGIS. In R Studio, the number of libraries installed made determining where a function was located more difficult.
+
+In question one, the field calculator was used to calculate a length attribute for the hunt object using the operator "$length", with the length of the hunt path calculated as 46,606 meters. To create the 100 meter buffer around this path, the buffers tool from the MMQGIS plugin was used [@minn_mmqgis_2018], with the analysis tool "count points of polygon" used to tally the 24 stations located within.
+
+The buffer of 300 meters around the hunt path was created using the same methodology. Seventeen points of interest were within the buffer, with a total calculated "value" of 62 points summed with the field calculator. To find the highest and lowest life expectancy for the wards that the hunt passed through, the research tool "Select by Location" was used where the hunt intersected wards. These wards were then saved as a new shapefile with the London Data joined to them by ward code. Before doing so, the City of London code was set to the correct code, as the Aldersgate ward code had been left over from the dissolved City of London wards. The City of London had the highest life expectancy of 84.3, with the lowest life expectancy of 75.1 in Weavers. The mean life expectancy of 81.46 for both male and females was calculated as the mean of a new column averaging male and female life expectancy in the field calculator.
+
+In question six the Ripley's K test and Moran's I plot from the "spatsplot" R library [@baddeley_spatstat:_2005], were used in R Studio to analyze if there was any pattern to the points of interest distribution. When these points were plotted with a Ripley's K test, at no point was the plotted line for the treasure hunt points lower than the expected plot line, indicating that the distribution is not random. The Moran's I plot result of .1001 also indicates non-random central clustering. The R script is included in the appendix zip file.
+
+![**Figure Three: Treasure Hunt Path Inaccuracy**](hunt_inaccuracy.png)
+
+The primary limitation of data within this assessment is the inaccuracy of the hunt path provided. When overlaid onto a map of London, there are large straight-line segments that cut through blocks and also overlap onto the Thames. As a result, the buffers drawn from this path are also inaccurate, and perhaps include locations not within range of the true path. If the underlying data that the analysis is based on is questionable, then it leads to follow that the analysis has a degree of uncertainty associated with it as well.
+
+<P style="page-break-before: always">
+
+## Assessment Three
+
+**Introduction**
+
+
+In the United States, cadastral information, also referred to as parcels or parcel data, is a widely available type of government data.  Cadastral information, as a broad definition is the polygon data that denotes the extent of distinct areas of land ownership in a geometric visual representation of the ownership bounds [@oxford_dictionaries_cadastral_2018]. In the United States, common attributes associated with these polygons or "parcels" include a unique parcel identification number, the site address, the owner name, and slightly less often, assessor data like parcel value, sale value, and the structure build year. Within the United States, while some states provide a cadastral file for the entire state, and some states keep an internal inventory of cadastral data, most publicly accessible cadastral information is typically available at the city or county level in large metropolitan areas [@von_meyer_building_2013]. The inclusion of owner names as public data in the United States is not necessarily standard practice in every state or area, and some states have taken steps to restrict the access to this information. A notable example of ownership data restriction based on privacy and safety concerns is in Government Code Section 6254.21 of the California Public Records Act. This section, implemented in 1998, makes it illegal under state law to post the home address of any elected or appointed official, with the argument made that exposing this information could allow for a potential security hazard to those individuals [@state_of_california_law_1998].
+
+**Importance**
+
+Where this information is available, it can provide valuable insight into ownership trends and patterns within an area. In a study conducted from 1979 to 1980, a research team from the University of Kentucky conducted a comprehensive investigation into land ownership patterns in 80 Appalachian counties, and found that, among other conclusions, a high concentration of land ownership in a small number of landholders led to environmental degradation, and a high degree of absentee ownership [@appalachian_land_ownership_task_force_who_2015]. Another study conducted in the Canadian city of Vancouver found a strong correlation between concentration of foreign investment in land ownership and a rate of increase in home and rental prices that place home ownership beyond the reach of many Vancouverites [@ley_global_2015]. 
+
+**Tool Considerations**
+
+While the Appalachian Land Ownership Task Force had to manually recording ownership information at 80 different courthouses, the widespread availability of digitized cadastral data has simplified this task greatly [@von_meyer_building_2013]. However, analyzing and using cadastral data, even in a digital format, is not without difficulties. Besides the fact that many jurisdictions still do not release this public data for public download [@von_meyer_building_2013], many of these files are quite large and can be unwieldy to query and analyze on a personal computer. As an example, Los Angeles County, the most populous county within the United States [@us_census_bureau_big_2017], has a total of 2,401,448 parcels as of December 2018 [@los_angeles_county_assessors_office_assessor_2018]. To avoid counting owner frequency in a parcel shapefile, and then saving each of the "top owners" as a new selection manually within QGIS or ArcGIS, a function in R Studio, named "ownershipinfo" was created to streamline this task. This function takes a shapefile input, displays the top five owners along with various summary statistics, exports an ownership count table as a CSV file, and prompts the user to choose an ownership extent to display as an interactive map with the "tmap" library. The ability to create interactive maps that can be exported as .html files, as well as a desire to avoid reliance on platform-specific packages like ArcPy or Model Builder, led to the decision to use R for this function.
+
+
+**Function Workflow**
+
+
+As parcel fields and formatting are not standardized in the United States, other than statewide standards used in states like Wisconsin [@wisconsin_state_cartographers_office_final_nodate], one of the key considerations in the creation of this tool was that it should be able to be used on a cadastral dataset regardless of column formatting, otherwise the reusability of the tool would be minimal. Another consideration was that it should also examine the total acreage and total parcel value associated with each owner, as well as the percentage of acreage and parcel value for all owners held by each individual owner. The tool also needed to be interactive, to allow the user to specify which columns within the parcel file to run the analysis on, as well as to select an owner or group of owners to visualize in an interactive map.
+
+To create this function, the libraries "sp" [@bivand_applied_2013], "plyr" [@wickham_split-apply-combine_2011], "rgdal" [@bivand_rgdal:_2018], "tmap" [@tennekes_tmap:_2018], and "tmaptools" [@tennekes_tmaptools:_2018] were used, and are called with "require" operators after the user initializes the function by specifying a dataset to use within the function. The function then reads the selected shapefile as an "sp" object, referred to as "parcels" within the function. The function then visually returns the column names, and prompts the user to select the owner, acreage, and parcel value columns, using the "readline" function. The index for each selected column is determined, and the three columns renamed to "owner", "acres", and "parcelvalue". 
+
+The reason that the columns are renamed is to match the default column names within the aggregating functions, which avoids passing a variable to those functions. The acreage and parcel value columns are aggregated to the owner column and saved as new tables using the "plyr" library, with the aggregated acreage and parcel value saved as "total acres" and "total parcel value" columns. These created tables are then merged together. The count function from the "plyr" library is then used on the "parcels" object to create a new table with owner name frequency. This "ownercount" table is then merged with the previously combined acreage/parcel value column. Percentage statistics for each of the three fields are calculated, with a new table referred to as "sortedtable" created, sorted by owner frequency. The top five owners and associated summary statistics from this table are then displayed as a table header, with the created "sortedtable" is exported to the working directory as a CSV file.
+
+The top five owner names are then individually saved as variables, which are then used to create a new object with only the parcels associated with that owner, using the original "parcels" object. After doing so, the function prompts the user to select an individual owner or the top five owners to plot in an interactive map, using the "tmap" and "tmaptools" libraries. The five owners are assigned a different color, indicated in the map legend. Initially, it was planned to include the original parcel file as grey background data to provide context for the extent of the original parcel data. However, by doing so the rendering process for the maps became quite slow, and it was not possible to export the rendered result as an .html document.
+
+
+**Function Use**
+
+
+To demonstrate the utility of this function, Alleghany County, North Carolina, was selected as the geographic test area. This county was chosen because the state of North Carolina has a frequently updated and standardized state schema, with all counties within the state downloadable from a single site. The county itself was also updated in 2018 [@state_of_north_carolina_nc_nodate] and is small enough that the shapefile for the county was able to be included in the accompanying zip file to be used as sample data with this assessment. The top five owners within Alleghany County, as well as a link to an interactive map of the top five owners within each city is included below. The CSV file of owner counts, with summary statistics included, is contained with the separate zip file which also contains the R script and the county parcel shapefile to use with the function. The interactive map of these owners is also included in this zip file, under the name "Alleghany Top Five Owners Map.html"
+
+**Table One: Top Five Owners by Parcel Count Within Alleghany County, North Carolina**
+
+```{r include=FALSE}
+library(tidyverse)
+library(knitr)
+top5table <- read_csv("Alleghany County Top Five Owners.csv")
+```
+```{r echo=FALSE}
+kable(top5table)
+```
+
+![**Figure Four: Top Five Owners Within Alleghany County**](Alleghany Top Five Owners.png)
+
+
+As visible within the image above and the associated interactive map, there appear to be a pattern of geographic property clustering by common owner. Notably, two of the five largest landholders in the county are public entities, with the State of North Carolina as the single largest owner, and the United States of America as fifth largest. This is perhaps the result of state parks within the county, and the Blue Ridge National Parkway, which passes though the county.
+
+The main limitation of this created "ownershipinfo" function is that while it streamlines the amount of actions needed by a user to analyze a parcel dataset, the actual queries are still somewhat slow, especially on larger counties. An attempt to analyze ownership within Fulton County Georgia, home to the City of Atlanta, took over one and a half hours to just load the fields for selection. A perhaps more efficient method to conduct this analysis would use PostGIS or another SQL-based database interface to streamline the creation of the owner frequency column and the other summary statistics. From there one could then render the selections using Mapbox or some other providing service that provides more efficient rendering than the "tmap" functionality within R Studio.
+
+
+**Future Uses and Conclusion**
+
+
+While the included example data is just one rural county in North Carolina, the true value of this tool is the ease of use for multiple different data sources, regardless of original data formatting. One could use this tool to compare ownership patterns and concentrations between any two areas with parcel data, and additionally, a user could also modify the function use any "many to one" field like zoning, land use, school district, or jurisdiction in place of an owner column. Any two numeric fields with a unique value for each record can also be used in place of acreage and parcel value as well. An interesting potential future use of this tool would be to run the script on a variety of locations and determine if there is any correlation between how concentrated the ownership/ownership acreage/ownership value or other fields are, and other variables tracked for that city like homelessness, land tenure (or lack thereof), and rental rate. Based on the results of the preliminary investigation within this assessment specifically, examining the proportion of land owned by government at the local, state, and federal level within a geographic area could reveal interesting patterns across regions in regards to land ownership concentration.
+
+<P style="page-break-before: always">
+
+## Bibliography
